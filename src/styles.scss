@@ -1,4 +1,80 @@
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+// Plus imports for other views in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$light-primary: mat-palette($mat-light-blue);
+$light-accent: mat-palette($mat-amber, A200, A100, A400);
+$light-warn: mat-palette($mat-red);
+$light-theme: mat-light-theme($light-primary, $light-accent, $light-warn);
+
+// Define an alternate dark theme.
+$dark-primary: mat-palette($mat-blue);
+$dark-accent: mat-palette($mat-purple, A200, A100, A400);
+$dark-warn: mat-palette($mat-red);
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+.dark-theme {
+  @include angular-material-theme($dark-theme);
+}
+
+@include angular-material-theme($light-theme);
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+* {
+  outline: none !important;
+}
+
+//--------- SCROLL ----------------------------------------------------------\\
+
+.customized-scroll {
+  max-height: 100vh;
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-color: #b4b4b4 rgba(225, 225, 225, 0.4);
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
+}
+
+.customized-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.customized-scroll::-webkit-scrollbar-thumb {
+  background: #cdcdcd;
+  border-radius: 4px;
+}
+
+.customized-scroll::-webkit-scrollbar-thumb:hover {
+  background: #b4b4b4;
+  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+.customized-scroll::-webkit-scrollbar-thumb:active {
+  background-color: #9b9b9b;
+}
+
+.customized-scroll::-webkit-scrollbar-track {
+  background-color: rgba(225, 225, 225, 0.4);
+  border-radius: 4px;
+}
