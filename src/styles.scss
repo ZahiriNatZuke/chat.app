@@ -4,6 +4,7 @@
 // For more information: https://material.angular.io/guide/theming
 @import '~@angular/material/theming';
 // Plus imports for other views in your app.
+@import '~@angular/cdk/overlay-prebuilt.css';
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -37,6 +38,10 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  //----CHAT------\\
+  background-color: #74EBD5;
+  background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+  min-height: 100vh;
 }
 
 * {
@@ -45,36 +50,29 @@ body {
 
 //--------- SCROLL ----------------------------------------------------------\\
 
-.customized-scroll {
-  max-height: 100vh;
-  overflow: scroll;
-  overflow-x: hidden;
-  overflow-y: auto;
-  scrollbar-color: #b4b4b4 rgba(225, 225, 225, 0.4);
-  scrollbar-width: thin;
-  scroll-behavior: smooth;
-}
-
-.customized-scroll::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.customized-scroll::-webkit-scrollbar-thumb {
-  background: #cdcdcd;
+::-webkit-scrollbar-thumb {
+  background: #ddd;
   border-radius: 4px;
+  outline: 1px solid slategrey;
+  width: 1em;
 }
 
-.customized-scroll::-webkit-scrollbar-thumb:hover {
+::-webkit-scrollbar-thumb:hover {
   background: #b4b4b4;
   box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
 }
 
-.customized-scroll::-webkit-scrollbar-thumb:active {
+::-webkit-scrollbar-thumb:active {
   background-color: #9b9b9b;
 }
 
-.customized-scroll::-webkit-scrollbar-track {
-  background-color: rgba(225, 225, 225, 0.4);
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
   border-radius: 4px;
+  width: 6px;
 }

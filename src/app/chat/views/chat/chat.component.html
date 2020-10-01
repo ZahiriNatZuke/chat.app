@@ -1,0 +1,43 @@
+<div class="container p-4">
+
+    <div class="row rounded-lg overflow-hidden shadow">
+        <!-- Users box-->
+        <div class="col-5 px-0">
+            <div class="bg-white">
+
+                <div class="bg-gray px-4 py-2 bg-light d-flex justify-content-between">
+                    <p class="h5 mb-0 py-1">{{ authUser.name }}</p>
+                    <button mat-icon-button (click)="logout()">
+                        <mat-icon>exit_to_app</mat-icon>
+                    </button>
+                </div>
+
+                <div class="messages-box">
+                    <app-users-list></app-users-list>
+                </div>
+            </div>
+        </div>
+        <!-- Chat Box-->
+        <div class="col-7 px-0">
+
+            <div #chatBox class="px-4 py-5 chat-box bg-white">
+                <app-chat-box></app-chat-box>
+            </div>
+
+            <!-- Typing area -->
+            <div class="bg-light">
+                <div class="form">
+                    <mat-form-field class="full-width px-2">
+                        <mat-label>Type...</mat-label>
+                        <input matInput [(ngModel)]="inputMessage" (keyup.enter)="sendMessage()"/>
+                    </mat-form-field>
+                    <div class="send-button pr-2">
+                        <button mat-icon-button type="submit" class="btn-link" (click)="sendMessage()">
+                            <mat-icon>send</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

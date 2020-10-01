@@ -1,0 +1,50 @@
+<div class="limiter">
+  <div class="container-login100 py-0">
+    <div class="wrap-login100 p-t-50 p-b-51 px-5 pb-5">
+      <form class="login100-form validate-form flex-sb flex-w" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <span class="login100-form-title p-b-51">Chat App | Register</span>
+
+        <!--Add  .alert-validate to show input invalid-->
+        <div #name class="wrap-input100 validate-input m-b-16" data-validate="" (input)="eraseAlert(nameElm)">
+          <input class="input100" formControlName="name" type="text" name="name" placeholder="Full Name" required>
+          <span class="focus-input100"></span>
+        </div>
+
+        <!--Add  .alert-validate to show input invalid-->
+        <div #email class="wrap-input100 validate-input m-b-16" data-validate="" (input)="eraseAlert(emailElm)">
+          <input class="input100" formControlName="email" type="email" name="email" placeholder="Email"
+                 autocomplete="email" required>
+          <span class="focus-input100"></span>
+        </div>
+
+        <!--Add  .alert-validate to show input invalid-->
+        <div #password class="wrap-input100 validate-input m-b-16" data-validate=""
+             (input)="eraseAlert(passwordElm)">
+          <input class="input100" formControlName="password" type="password" name="password"
+                 placeholder="Password" autocomplete="new-password" required minlength="8">
+          <span class="focus-input100"></span>
+        </div>
+
+        <!--Add  .alert-validate to show input invalid-->
+        <div #password_confirmation class="wrap-input100 validate-input m-b-16" data-validate=""
+             (input)="eraseAlert(passwordConfirmationElm)">
+          <input class="input100" formControlName="password_confirmation" type="password" name="password_confirmation"
+                 placeholder="Password Confirmation" autocomplete="new-password" required minlength="8"
+                 [pattern]="registerForm.get('password').value">
+          <span class="focus-input100"></span>
+        </div>
+
+        <div class="container-login100-form-btn m-t-17">
+          <button class="login100-form-btn" type="submit">Sign Up</button>
+        </div>
+
+      </form>
+
+      <div class="d-flex justify-content-center mt-2">
+        <a [routerLink]="['/auth/login']" class="font-weight-bold">I already have an account</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
