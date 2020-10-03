@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './utils/services/auth.service';
 import { CrudService } from './utils/services/crud.service';
 import { AuthModule } from './auth/auth.module';
-import { ChatService } from './utils/services/chat.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,7 +28,7 @@ import { ChatService } from './utils/services/chat.service';
     ReactiveFormsModule,
     AuthModule
   ],
-  providers: [AuthService, CrudService, ChatService],
+  providers: [AuthService, CrudService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

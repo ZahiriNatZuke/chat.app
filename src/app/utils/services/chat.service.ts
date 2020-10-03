@@ -6,6 +6,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ApiHelpers } from './api.helpers';
 import { Message } from '../interfaces/message';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { AuthService } from './auth.service';
 
 const apiHelpers = new ApiHelpers();
 
@@ -18,12 +20,18 @@ export class ChatService {
   private currentMessageStackSubject: BehaviorSubject<Message[]>;
   public currentMessageStack: Observable<Message[]>;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    private dbService: NgxIndexedDBService,
+    private authService: AuthService
+  ) {
     this.currentUsersListSubject = new BehaviorSubject<User[]>([]);
     this.currentUsersList = this.currentUsersListSubject.asObservable();
 
     this.currentMessageStackSubject = new BehaviorSubject<Message[]>([]);
     this.currentMessageStack = this.currentMessageStackSubject.asObservable();
+
+    this.catchDataFromIndexDB();
   }
 
   public get currentUserListValue(): User[] {
@@ -42,7 +50,7 @@ export class ChatService {
     this.currentMessageStackSubject.next(messageStack);
   }
 
-  sendMessage(message: string, socketId: string): Observable<any> {
+  sendPublicMessage(message: string, socketId: string): Observable<any> {
     return this.httpClient.post(
       apiHelpers.getSendMessageURL(),
       { message },
@@ -50,7 +58,11 @@ export class ChatService {
     );
   }
 
-  sendDirectMessage(message: string, to: number, socketId: string): Observable<any> {
+  sendDirectMessage(
+    message: string,
+    to: number,
+    socketId: string
+  ): Observable<any> {
     return this.httpClient.post(
       apiHelpers.getSendDirectMessageURL(),
       { message, to },
@@ -86,5 +98,13 @@ export class ChatService {
       Authorization: `Bearer ${localStorage.getItem('X-Auth-Token')}`,
       'X-Socket-ID': socketId
     });
+  }
+
+  catchDataFromIndexDB(): void {
+    this.dbService
+      .getAll('public_message')
+      .subscribe((pubMessages: Message[]) => {
+        this.currentMessageStackSubject.next(pubMessages);
+      });
   }
 }

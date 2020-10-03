@@ -7,7 +7,7 @@
             <p class="text-small mb-0" [ngClass]="item.me ? 'text-white' : 'text-muted'">{{ item.message }}</p>
         </div>
         <p class="small text-muted" [ngClass]="item.me ? 'text-right' : 'text-left'">
-            <b>{{ item.from }}</b> 12:00 PM | Aug 13
+            <b>{{ item.from }}</b> {{ item.date['date']  | dateChat }}
         </p>
     </div>
 </div>

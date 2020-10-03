@@ -2,9 +2,9 @@
 
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import "~@angular/material/theming";
 // Plus imports for other views in your app.
-@import '~@angular/cdk/overlay-prebuilt.css';
+@import "~@angular/cdk/overlay-prebuilt.css";
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
@@ -31,7 +31,8 @@ $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
 
 @include angular-material-theme($light-theme);
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -39,8 +40,8 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
   //----CHAT------\\
-  background-color: #74EBD5;
-  background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
+  background-color: #74ebd5;
+  background-image: linear-gradient(90deg, #74ebd5 0%, #9face6 100%);
   min-height: 100vh;
 }
 
@@ -75,4 +76,9 @@ body {
   background-color: #f5f5f5;
   border-radius: 4px;
   width: 6px;
+}
+
+//--------- GLOBAL ----------------------------------------------------------\\
+.user-list-active {
+  background: #e6e9ec;
 }

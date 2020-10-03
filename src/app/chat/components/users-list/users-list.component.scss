@@ -1,4 +1,15 @@
 .list-group-item {
-    border: thin solid rgba(192, 192, 192, 0.658) !important;
-    border-radius: .2rem !important;
+  border: 0.12rem solid rgba(192, 192, 192, 0.658) !important;
+  border-radius: 0.35rem !important;
+  cursor: pointer;
+  user-select: none;
+}
+
+.mat-icon {
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.material-icons {
+  font-size: 50px !important;
 }
