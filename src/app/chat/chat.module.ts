@@ -17,6 +17,10 @@ import { NgxIndexedDBModule, DBConfig } from 'ngx-indexed-db';
 import { ChatService } from '../utils/services/chat.service';
 import { DateChatPipe } from '../utils/pipes/date-chat.pipe';
 import { AgoDatePipe } from '../utils/pipes/ago-date.pipe';
+import { PrivateToastComponent } from './components/private-toast/private-toast.component';
+import { LogoutToastComponent } from './components/logout-toast/logout-toast.component';
+import { PublicToastComponent } from './components/public-toast/public-toast.component';
+import { DateToastPipe } from '../utils/pipes/date-toast.pipe';
 
 const dbConfig: DBConfig = {
   name: 'Chat.DB',
@@ -48,7 +52,17 @@ const dbConfig: DBConfig = {
 };
 
 @NgModule({
-  declarations: [ChatComponent, UsersListComponent, ChatBoxComponent, DateChatPipe, AgoDatePipe],
+  declarations: [
+    ChatComponent,
+    UsersListComponent,
+    ChatBoxComponent,
+    DateChatPipe,
+    AgoDatePipe,
+    PrivateToastComponent,
+    LogoutToastComponent,
+    PublicToastComponent,
+    DateToastPipe
+  ],
   imports: [
     CommonModule,
     ChatRoutingModule,
@@ -65,4 +79,4 @@ const dbConfig: DBConfig = {
   ],
   providers: [ChatService]
 })
-export class ChatModule {}
+export class ChatModule { }

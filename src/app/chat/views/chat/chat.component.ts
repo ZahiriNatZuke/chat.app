@@ -7,13 +7,17 @@ import {
 } from '@angular/core';
 import { ChatService } from '../../../utils/services/chat.service';
 import { Message } from '../../../utils/interfaces/message';
-import { User } from 'src/app/utils/interfaces/User';
-import { AuthService } from 'src/app/utils/services/auth.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import Echo from 'laravel-echo';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import * as moment from 'moment';
+import { FormControl } from '@angular/forms';
+import { User } from '../../../utils/interfaces/User';
+import { AuthService } from '../../../utils/services/auth.service';
+import { PrivateToastComponent } from '../../components/private-toast/private-toast.component';
+import { LogoutToastComponent } from '../../components/logout-toast/logout-toast.component';
+import { PublicToastComponent } from '../../components/public-toast/public-toast.component';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +25,7 @@ import * as moment from 'moment';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit, OnDestroy {
-  inputMessage = '';
+  inputMessage = new FormControl('');
   @ViewChild('chatBox') chatBox: ElementRef<HTMLDivElement>;
   authUser: User;
   echoPublic: Echo;
@@ -40,9 +44,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.echoPrivate = this.chatService.getEcho();
     this.authService.currentUser.subscribe(
       (user: User) => (this.authUser = user)
-    );
-    this.chatService.currentMessageStack.subscribe(() =>
-      setTimeout(() => this.scrollToBottom(), 300)
     );
   }
 
@@ -65,12 +66,21 @@ export class ChatComponent implements OnInit, OnDestroy {
         const currentStack: Message[] = this.chatService
           .currentMessageStackValue;
         this.chatService.updateMessageStackValue(currentStack.concat(pubMsg));
+        this.scrollToBottom('smooth');
       } else {
-        this.snack.open('Public Group', `${resp.from}: ${resp.message}`, {
-          duration: 4500,
-          horizontalPosition: 'end',
-          verticalPosition: 'top'
-        });
+        this.snack.openFromComponent(PublicToastComponent,
+          {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['p-0'],
+            data: {
+              from: resp.from,
+              message: resp.message,
+              date: resp.date
+            }
+          }
+        );
       }
     });
   }
@@ -112,14 +122,19 @@ export class ChatComponent implements OnInit, OnDestroy {
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
           this.chatService.updateMessageStackValue(currentStack.concat(pvMsg));
+          this.scrollToBottom('smooth');
         } else {
-          this.snack.open(
-            `from: ${resp.response.from.name}`,
-            resp.response.message,
+          this.snack.openFromComponent(PrivateToastComponent,
             {
-              duration: 4500,
+              duration: 3000,
               horizontalPosition: 'end',
-              verticalPosition: 'top'
+              verticalPosition: 'top',
+              panelClass: ['p-0'],
+              data: {
+                from: resp.response.from.name,
+                message: resp.response.message,
+                date: resp.response.date
+              }
             }
           );
         }
@@ -137,29 +152,31 @@ export class ChatComponent implements OnInit, OnDestroy {
         )
         .subscribe((msgStack: Message[]) => {
           this.chatService.updateMessageStackValue(msgStack);
+          this.scrollToBottom('auto');
         });
     } else {
       this.dbService
         .getAll('public_message')
         .subscribe((pubMessages: Message[]) => {
           this.chatService.updateMessageStackValue(pubMessages);
+          this.scrollToBottom('auto');
         });
     }
   }
 
   sendMessage(): void {
-    if (this.inputMessage.length > 0) {
+    if (this.inputMessage.value.length > 0) {
       this.userDM ? this.sendDirectMessage() : this.sendPublicMessage();
     }
   }
 
   sendPublicMessage(): void {
     this.chatService
-      .sendPublicMessage(this.inputMessage, this.echoPublic.socketId())
+      .sendPublicMessage(this.inputMessage.value, this.echoPublic.socketId())
       .subscribe(resp => {
         this.lastInteraction = moment(resp.date.date).fromNow();
         const pubMsg = {
-          message: this.inputMessage,
+          message: this.inputMessage.value,
           me: true,
           from: 'Me',
           date: resp.date
@@ -168,20 +185,21 @@ export class ChatComponent implements OnInit, OnDestroy {
         const currentStack: Message[] = this.chatService
           .currentMessageStackValue;
         this.chatService.updateMessageStackValue(currentStack.concat(pubMsg));
-        this.inputMessage = '';
+        this.scrollToBottom('smooth');
+        this.inputMessage.reset();
       });
   }
 
   sendDirectMessage(): void {
     this.chatService
       .sendDirectMessage(
-        this.inputMessage,
+        this.inputMessage.value,
         this.userDM.id,
         this.echoPrivate.socketId()
       )
       .subscribe(resp => {
         const pvMsg = {
-          message: this.inputMessage,
+          message: this.inputMessage.value,
           me: true,
           to: this.userDM.name,
           from: 'Me',
@@ -192,27 +210,30 @@ export class ChatComponent implements OnInit, OnDestroy {
         const currentStack: Message[] = this.chatService
           .currentMessageStackValue;
         this.chatService.updateMessageStackValue(currentStack.concat(pvMsg));
-        this.inputMessage = '';
+        this.scrollToBottom('smooth');
+        this.inputMessage.reset();
       });
   }
 
   logout(): void {
-    this.authService.GetForLogout().subscribe(res => {
+    this.authService.GetForLogout().subscribe(resp => {
       this.authService.updateCurrentUserValue(null);
       this.authService.updateCurrentTokenValue(null);
       this.router.navigate(['/auth/login']);
-      this.snack.open(res.message, '', {
+      this.snack.openFromComponent(LogoutToastComponent, {
         duration: 2000,
         verticalPosition: 'top',
-        horizontalPosition: 'center'
+        horizontalPosition: 'center',
+        panelClass: ['p-0'],
+        data: { message: resp.message }
       });
     });
   }
 
-  scrollToBottom(): void {
+  scrollToBottom(behavior: 'smooth' | 'auto'): void {
     const newTop = this.chatBox.nativeElement.scrollHeight;
     this.chatBox.nativeElement.scroll({
-      behavior: 'auto',
+      behavior,
       top: newTop
     });
   }

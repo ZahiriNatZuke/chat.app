@@ -30,7 +30,7 @@
                 <div class="form">
                     <mat-form-field class="full-width px-2">
                         <mat-label>Type...</mat-label>
-                        <input matInput [(ngModel)]="inputMessage" (keyup.enter)="sendMessage()" />
+                        <input matInput [formControl]="inputMessage" (keyup.enter)="sendMessage()"/>
                     </mat-form-field>
                     <div class="send-button pr-2">
                         <button mat-icon-button type="submit" class="btn-link" (click)="sendMessage()">

@@ -1,0 +1,10 @@
+<div class="alert alert-info d-flex flex-column">
+    <div class="d-flex justify-content-start">
+        <span aria-labelledby="message-group" class="font-weight-bold">Public Group:&nbsp;</span>
+        <span aria-labelledby="message-from" class="font-weight-light">{{ data.from }}</span>
+        <small aria-labelledby="message-date" class="ml-2 font-italic">{{ data.date['date'] | dateToast }}</small>
+    </div>
+    <span aria-labelledby="message-to" class="d-flex justify-content-end">
+        {{ data.message }}
+    </span>
+</div>
