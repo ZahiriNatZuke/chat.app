@@ -12,7 +12,6 @@ export class UsersListComponent {
   authUser: User;
   usersList: User[];
   usersCount: number;
-  @Input() lastInteraction: string;
   @Output() userSelected: EventEmitter<User>;
   currentUserChat: User = null;
 

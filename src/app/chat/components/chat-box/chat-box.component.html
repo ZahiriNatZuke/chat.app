@@ -1,13 +1,43 @@
-<!-- Sender Message-->
-<div class="media w-65 mb-3" *ngFor="let item of messageStack" [ngClass]="item.me ? 'ml-auto' : ''">
-    <img *ngIf="!item.me" src="https://storage.deepmedia.dev.com/MjWkc4qXcxodYil5bkGWLqwMHatCZ6N9Vu6j058U.png"
-        alt="user" width="50" class="rounded-circle">
-    <div class="media-body" [ngClass]="item.me ? 'ml-3' : ''">
-        <div class="rounded py-2 px-3 mb-2" [ngClass]="item.me ? 'bg-primary' : 'bg-light'">
-            <p class="text-small mb-0" [ngClass]="item.me ? 'text-white' : 'text-muted'">{{ item.message }}</p>
+<div *ngFor="let item of messageStack">
+
+    <ng-container *ngIf="!item.reference?._message; else elseTemplate">
+        <div class="media w-65 mb-3" [ngClass]="item.me ? 'ml-auto' : ''"
+            (contextmenu)="openOptionsSheet($event, item)">
+            <img *ngIf="!item.me" src="https://storage.deepmedia.dev.com/MjWkc4qXcxodYil5bkGWLqwMHatCZ6N9Vu6j058U.png"
+                alt="user" width="50" class="rounded-circle">
+            <div class="media-body" [ngClass]="item.me ? 'ml-3' : ''">
+                <div class="rounded py-2 px-3 mb-2" [ngClass]="item.me ? 'bg-primary' : 'bg-light'">
+                    <p class="text-small mb-0 cursor-normal" [ngClass]="item.me ? 'text-white' : 'text-muted'">
+                        {{ item.message }}
+                    </p>
+                </div>
+                <p class="small text-muted cursor-normal" [ngClass]="item.me ? 'text-right' : 'text-left'">
+                    <b>{{ item.from }}</b> {{ item.date['date']  | dateChat }}
+                </p>
+            </div>
         </div>
-        <p class="small text-muted" [ngClass]="item.me ? 'text-right' : 'text-left'">
-            <b>{{ item.from }}</b> {{ item.date['date']  | dateChat }}
-        </p>
-    </div>
+    </ng-container>
+
+    <ng-template #elseTemplate>
+        <div class="media w-65 mb-3" (contextmenu)="openOptionsSheet($event, item)"
+            [ngClass]="item.me ? 'ml-auto' : ''">
+            <div class="media-body">
+                <p class="text-small mb-0 rounded pt-2 pb-4 px-3 cursor-normal"
+                    [ngClass]="item.me ? ['mr-3', 'bg-light-50', 'text-muted'] : ['ml-3', 'bg-primary', 'text-white']">
+                    <b>{{ item.reference['_from'] }}</b> | {{ item.reference['_message'] }}
+                </p>
+                <div class="media-body position-relative" style="top: -20px;" [ngClass]="item.me ? 'ml-3' : 'mr-3'">
+                    <div class="rounded py-2 px-3" [ngClass]="item.me ? 'bg-primary' : 'bg-light-50'">
+                        <p class="text-small mb-0 cursor-normal" [ngClass]="item.me ? 'text-white' : 'text-muted'">
+                            {{ item.message }}
+                        </p>
+                    </div>
+                    <p class="small text-muted cursor-normal" [ngClass]="item.me ? 'text-right' : 'text-left'">
+                        <b>{{ item.from }}</b> {{ item.date['date']  | dateChat }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
 </div>

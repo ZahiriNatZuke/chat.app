@@ -13,8 +13,7 @@
                 </div>
 
                 <div class="messages-box">
-                    <app-users-list (userSelected)="catchUserSelected($event)" [lastInteraction]="lastInteraction">
-                    </app-users-list>
+                    <app-users-list (userSelected)="catchUserSelected($event)"></app-users-list>
                 </div>
             </div>
         </div>
@@ -22,22 +21,31 @@
         <div class="col-7 px-0">
 
             <div #chatBox class="px-4 py-5 chat-box bg-white">
-                <app-chat-box></app-chat-box>
+                <app-chat-box (optionSelected)="catchOptionSelected($event)"></app-chat-box>
+                <div *ngIf="referenceMessage"
+                    class="d-flex justify-content-between bg-light-50 text-muted w-100 p-2 reference-msg">
+                    <small class="flex-grow-1 overflow-hidden">
+                        {{ referenceMessage.message | referenceLimiter }}
+                    </small>
+                    <button mat-icon-button id="close-btn" (click)="closeReference()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </div>
             </div>
 
             <!-- Typing area -->
             <div class="bg-light">
-                <div class="form">
+                <form class="form" (ngSubmit)="sendMessage()" [formGroup]="inputMessage">
                     <mat-form-field class="full-width px-2">
-                        <mat-label>Type...</mat-label>
-                        <input matInput [formControl]="inputMessage" (keyup.enter)="sendMessage()"/>
+                        <mat-label>Message</mat-label>
+                        <input matInput formControlName="message" (keyup.enter)="sendMessage()" />
                     </mat-form-field>
                     <div class="send-button pr-2">
                         <button mat-icon-button type="submit" class="btn-link" (click)="sendMessage()">
                             <mat-icon>send</mat-icon>
                         </button>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

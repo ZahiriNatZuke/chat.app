@@ -50,24 +50,25 @@ export class ChatService {
     this.currentMessageStackSubject.next(messageStack);
   }
 
-  sendPublicMessage(message: string, socketId: string): Observable<any> {
+  sendPublicMessage(message: any, socketId: string): Observable<any> {
     return this.httpClient.post(
-      apiHelpers.getSendMessageURL(),
-      { message },
+      apiHelpers.getSendPublicMessageURL(), message,
       { headers: this.getHeaders(socketId) }
     );
   }
 
-  sendDirectMessage(
-    message: string,
-    to: number,
-    socketId: string
-  ): Observable<any> {
-    return this.httpClient.post(
-      apiHelpers.getSendDirectMessageURL(),
-      { message, to },
+  sendDirectMessage(message: any, socketId: string): Observable<any> {
+    return this.httpClient.post(apiHelpers.getSendDirectMessageURL(), message,
       { headers: this.getHeaders(socketId) }
     );
+  }
+
+  deleteMessage(channel: 'public' | 'private', hash: string, socketId: string): Observable<any> {
+    return this.httpClient.post(apiHelpers.getDeleteMessageURL(),
+      {
+        channel, hash,
+        from: this.authService.currentUserValue
+      }, { headers: this.getHeaders(socketId) })
   }
 
   getEcho(): Echo {
@@ -84,7 +85,7 @@ export class ChatService {
       auth: {
         headers: {
           Accept: 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('X-Auth-Token')}`
+          Authorization: `Bearer ${this.authService.currentTokenValue}`
         }
       }
     });
@@ -95,7 +96,7 @@ export class ChatService {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      Authorization: `Bearer ${localStorage.getItem('X-Auth-Token')}`,
+      Authorization: `Bearer ${this.authService.currentTokenValue}`,
       'X-Socket-ID': socketId
     });
   }

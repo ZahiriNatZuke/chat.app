@@ -1,8 +1,17 @@
 export interface Message {
+  webId?: number;
+  hash: string; // PK
   message: string;
-  me?: boolean;
-  from?: string;
+  from: string;
+  me: boolean;
+  date: Date;
   to?: string;
-  date?: Date;
   chat?: string;
+  reference?: Reference
+}
+
+export interface Reference {
+  _message: string;
+  _hash: string;
+  _from: string;
 }

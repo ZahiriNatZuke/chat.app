@@ -26,12 +26,16 @@ export class ApiHelpers {
     return this.URL_API + '/auth/user';
   }
 
-  getSendMessageURL(): string {
-    return this.URL_API + '/message/send';
+  getSendPublicMessageURL(): string {
+    return this.URL_API + '/message/send-public-msg';
   }
 
   getSendDirectMessageURL(): string {
     return this.URL_API + '/message/send-direct-msg';
+  }
+
+  getDeleteMessageURL(): string {
+    return this.URL_API + '/message/delete-msg';
   }
 
   getHeadersWithOutAuth(): HttpHeaders {

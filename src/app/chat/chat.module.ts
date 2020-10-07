@@ -18,34 +18,43 @@ import { ChatService } from '../utils/services/chat.service';
 import { DateChatPipe } from '../utils/pipes/date-chat.pipe';
 import { AgoDatePipe } from '../utils/pipes/ago-date.pipe';
 import { PrivateToastComponent } from './components/private-toast/private-toast.component';
-import { LogoutToastComponent } from './components/logout-toast/logout-toast.component';
 import { PublicToastComponent } from './components/public-toast/public-toast.component';
 import { DateToastPipe } from '../utils/pipes/date-toast.pipe';
+import { OptionsSheetComponent } from './components/options-sheet/options-sheet.component';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatLineModule } from '@angular/material/core';
+import { MatListModule } from '@angular/material/list';
+import { NotificationToastComponent } from './components/notification-toast/notification-toast.component';
+import { ReferenceLimiterPipe } from '../utils/pipes/reference-limiter.pipe';
 
 const dbConfig: DBConfig = {
   name: 'Chat.DB',
-  version: 3,
+  version: 5,
   objectStoresMeta: [
     {
       store: 'private_message',
       storeConfig: { keyPath: 'webId', autoIncrement: true },
       storeSchema: [
+        { name: 'hash', keypath: 'hash', options: { unique: true } },
         { name: 'message', keypath: 'message', options: { unique: false } },
         { name: 'from', keypath: 'from', options: { unique: false } },
         { name: 'to', keypath: 'to', options: { unique: false } },
         { name: 'date', keypath: 'date', options: { unique: false } },
         { name: 'me', keypath: 'me', options: { unique: false } },
-        { name: 'chat', keypath: 'chat', options: { unique: false } }
+        { name: 'chat', keypath: 'chat', options: { unique: false } },
+        { name: 'reference', keypath: 'reference', options: { unique: false } }
       ]
     },
     {
       store: 'public_message',
       storeConfig: { keyPath: 'webId', autoIncrement: true },
       storeSchema: [
+        { name: 'hash', keypath: 'hash', options: { unique: true } },
         { name: 'message', keypath: 'message', options: { unique: false } },
         { name: 'from', keypath: 'from', options: { unique: false } },
         { name: 'date', keypath: 'date', options: { unique: false } },
-        { name: 'me', keypath: 'me', options: { unique: false } }
+        { name: 'me', keypath: 'me', options: { unique: false } },
+        { name: 'reference', keypath: 'reference', options: { unique: false } }
       ]
     }
   ]
@@ -59,9 +68,11 @@ const dbConfig: DBConfig = {
     DateChatPipe,
     AgoDatePipe,
     PrivateToastComponent,
-    LogoutToastComponent,
     PublicToastComponent,
-    DateToastPipe
+    DateToastPipe,
+    OptionsSheetComponent,
+    NotificationToastComponent,
+    ReferenceLimiterPipe
   ],
   imports: [
     CommonModule,
@@ -75,7 +86,10 @@ const dbConfig: DBConfig = {
     MatInputModule,
     TextFieldModule,
     MatDividerModule,
-    NgxIndexedDBModule.forRoot(dbConfig)
+    NgxIndexedDBModule.forRoot(dbConfig),
+    MatBottomSheetModule,
+    MatListModule,
+    MatLineModule
   ],
   providers: [ChatService]
 })
