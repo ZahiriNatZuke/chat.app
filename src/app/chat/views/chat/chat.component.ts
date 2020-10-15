@@ -17,6 +17,7 @@ import { AuthService } from '../../../utils/services/auth.service';
 import { PrivateToastComponent } from '../../components/private-toast/private-toast.component';
 import { NotificationToastComponent } from '../../components/notification-toast/notification-toast.component';
 import { PublicToastComponent } from '../../components/public-toast/public-toast.component';
+import { scrollTo } from 'scroll-js';
 
 @Component({
   selector: 'app-chat',
@@ -35,6 +36,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   echoDelete: Echo;
   userDM: User;
   referenceMessage: Message = null;
+  kindChatChange: 'chat' | 'message' = 'chat';
 
   constructor(
     private chatService: ChatService,
@@ -51,7 +53,10 @@ export class ChatComponent implements OnInit, OnDestroy {
       (user: User) => (this.authUser = user)
     );
     this.chatService.currentMessageStack.subscribe(() =>
-      setTimeout(() => this.scrollToBottom('auto'), 300)
+      setTimeout(() => {
+        this.scrollToBottom(this.kindChatChange === 'chat' ? 'auto' : 'smooth');
+        this.kindChatChange = "chat";
+      }, 300)
     );
   }
 
@@ -80,8 +85,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       if (this.userDM === null) {
         const currentStack: Message[] = this.chatService
           .currentMessageStackValue;
+        this.kindChatChange = 'message';
         this.chatService.updateMessageStackValue(currentStack.concat(pubMsg));
-        this.scrollToBottom('smooth');
       } else {
         this.snack.openFromComponent(PublicToastComponent,
           {
@@ -142,8 +147,8 @@ export class ChatComponent implements OnInit, OnDestroy {
         if (this.userDM?.id === resp.response.from.id) {
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
+          this.kindChatChange = 'message';
           this.chatService.updateMessageStackValue(currentStack.concat(pvMsg));
-          this.scrollToBottom('smooth');
         } else {
           this.snack.openFromComponent(PrivateToastComponent,
             {
@@ -186,15 +191,15 @@ export class ChatComponent implements OnInit, OnDestroy {
           IDBKeyRange.only(`chat-${this.authUser.id}-${this.userDM.id}`)
         )
         .subscribe((msgStack: Message[]) => {
+          this.kindChatChange = 'chat';
           this.chatService.updateMessageStackValue(msgStack);
-          this.scrollToBottom('auto');
         });
     } else {
       this.dbService
         .getAll('public_message')
         .subscribe((pubMessages: Message[]) => {
+          this.kindChatChange = 'chat';
           this.chatService.updateMessageStackValue(pubMessages);
-          this.scrollToBottom('auto');
         });
     }
   }
@@ -235,8 +240,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.dbService.add('public_message', pubMsg);
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
+          this.kindChatChange = 'message';
           this.chatService.updateMessageStackValue(currentStack.concat(pubMsg));
-          this.scrollToBottom('smooth');
           this.referenceMessage = null;
         });
     } else {
@@ -253,8 +258,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.dbService.add('public_message', pubMsg);
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
+          this.kindChatChange = 'message';
           this.chatService.updateMessageStackValue(currentStack.concat(pubMsg));
-          this.scrollToBottom('smooth');
           this.referenceMessage = null;
         });
     }
@@ -289,8 +294,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.dbService.add('private_message', pvMsg);
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
+          this.kindChatChange = 'message';
           this.chatService.updateMessageStackValue(currentStack.concat(pvMsg));
-          this.scrollToBottom('smooth');
           this.referenceMessage = null;
         });
     } else {
@@ -309,8 +314,8 @@ export class ChatComponent implements OnInit, OnDestroy {
           this.dbService.add('private_message', pvMsg);
           const currentStack: Message[] = this.chatService
             .currentMessageStackValue;
+          this.kindChatChange = 'message';
           this.chatService.updateMessageStackValue(currentStack.concat(pvMsg));
-          this.scrollToBottom('smooth');
           this.referenceMessage = null;
         });
     }
@@ -361,10 +366,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
   scrollToBottom(behavior: 'smooth' | 'auto'): void {
-    const newTop = this.chatBox.nativeElement.scrollHeight;
-    this.chatBox.nativeElement.scroll({
-      behavior,
-      top: newTop
+    const scrollHeight = this.chatBox.nativeElement.scrollHeight;
+    scrollTo(this.chatBox.nativeElement, {
+      top: scrollHeight,
+      behavior: behavior,
+      duration: behavior === 'auto' ? 200 : 500,
+      easing: behavior === 'auto' ? 'ease-in-out' : 'ease-in'
     });
   }
 
